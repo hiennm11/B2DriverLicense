@@ -5,7 +5,7 @@ using System.IO;
 
 namespace B2DriverLicense.Core.EF
 {
-    class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
     {
         public AppDbContext CreateDbContext(string[] args)
         {

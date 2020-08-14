@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\B2DriverLicense.Core\B2DriverLicense.Core.csproj" />
+    <ProjectReference Include="..\B2DriverLicense.Service\B2DriverLicense.Service.csproj" />
   </ItemGroup>
 
 </Project>
