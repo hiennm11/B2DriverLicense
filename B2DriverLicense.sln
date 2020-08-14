@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2DriverLicense.Core", "B2D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2DriverLicense.Service", "B2DriverLicense.Service\B2DriverLicense.Service.csproj", "{1B83DAAA-9B7B-4CBC-9BBA-CA691DA86D91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2DriverLicense.AppCrawler", "B2DriverLicense.Crawler\B2DriverLicense.AppCrawler.csproj", "{F814FBA1-94EC-49E9-A24D-44FBC88D6856}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1B83DAAA-9B7B-4CBC-9BBA-CA691DA86D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B83DAAA-9B7B-4CBC-9BBA-CA691DA86D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B83DAAA-9B7B-4CBC-9BBA-CA691DA86D91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F814FBA1-94EC-49E9-A24D-44FBC88D6856}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F814FBA1-94EC-49E9-A24D-44FBC88D6856}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F814FBA1-94EC-49E9-A24D-44FBC88D6856}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F814FBA1-94EC-49E9-A24D-44FBC88D6856}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
