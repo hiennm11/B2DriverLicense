@@ -81,6 +81,21 @@ namespace B2DriverLicense.Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Chapters",
+                columns: new[] { "Id", "Title" },
+                values: new object[,]
+                {
+                    { 1, "Khái niệm và quy tắc giao thông đường bộ" },
+                    { 2, "Nghiệp vụ vận tải" },
+                    { 3, "Văn hóa, đạo đức người lái xe" },
+                    { 4, "Kỹ thuật lái xe" },
+                    { 5, "Cấu tạo và sửa chữa xe" },
+                    { 6, "Biển báo hiệu đường bộ" },
+                    { 7, "Giải các thế sa hình và kỹ năng xử lý tình huống giao thông" },
+                    { 8, "Câu hỏi điểm liệt" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Answers_QuestionId",
                 table: "Answers",
@@ -89,7 +104,8 @@ namespace B2DriverLicense.Core.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Hints_QuestionId",
                 table: "Hints",
-                column: "QuestionId");
+                column: "QuestionId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_ChapterId",

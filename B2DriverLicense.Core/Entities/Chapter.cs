@@ -7,7 +7,6 @@ namespace B2DriverLicense.Core.Entities
 {
     public class Chapter
     {
-        [Key]
         public int Id { get; set; }
         public string Title { get; set; }
 

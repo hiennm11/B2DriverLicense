@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace B2DriverLicense.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200814092537_SeedChapterData")]
-    partial class SeedChapterData
+    [Migration("20200814130934_Initialv2")]
+    partial class Initialv2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -115,7 +115,8 @@ namespace B2DriverLicense.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
 
                     b.ToTable("Hints");
                 });
@@ -134,6 +135,9 @@ namespace B2DriverLicense.Core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CorrectAnswer")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -156,8 +160,8 @@ namespace B2DriverLicense.Core.Migrations
             modelBuilder.Entity("B2DriverLicense.Core.Entities.Hint", b =>
                 {
                     b.HasOne("B2DriverLicense.Core.Entities.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
+                        .WithOne("Hint")
+                        .HasForeignKey("B2DriverLicense.Core.Entities.Hint", "QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

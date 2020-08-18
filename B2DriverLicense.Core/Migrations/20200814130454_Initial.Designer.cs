@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace B2DriverLicense.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200814085013_Initial")]
+    [Migration("20200814130454_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,6 +56,48 @@ namespace B2DriverLicense.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Chapters");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Title = "Khái niệm và quy tắc giao thông đường bộ"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Title = "Nghiệp vụ vận tải"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Title = "Văn hóa, đạo đức người lái xe"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Title = "Kỹ thuật lái xe"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Title = "Cấu tạo và sửa chữa xe"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Title = "Biển báo hiệu đường bộ"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Title = "Giải các thế sa hình và kỹ năng xử lý tình huống giao thông"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Title = "Câu hỏi điểm liệt"
+                        });
                 });
 
             modelBuilder.Entity("B2DriverLicense.Core.Entities.Hint", b =>
@@ -73,7 +115,8 @@ namespace B2DriverLicense.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId");
+                    b.HasIndex("QuestionId")
+                        .IsUnique();
 
                     b.ToTable("Hints");
                 });
@@ -114,8 +157,8 @@ namespace B2DriverLicense.Core.Migrations
             modelBuilder.Entity("B2DriverLicense.Core.Entities.Hint", b =>
                 {
                     b.HasOne("B2DriverLicense.Core.Entities.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
+                        .WithOne("Hint")
+                        .HasForeignKey("B2DriverLicense.Core.Entities.Hint", "QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,4 +1,5 @@
 ﻿using B2DriverLicense.Core.EF;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace B2DriverLicense.Service.Repositories
@@ -7,11 +8,13 @@ namespace B2DriverLicense.Service.Repositories
     {
         public void Add(T entity);
         public Task AddAsync(T entity);
+        public void AddRange(List<T> entities);
+        public Task AddRangeAsync(List<T> entities);
     }
 
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
-        private readonly AppDbContext _dbContext;
+        protected readonly AppDbContext _dbContext;
 
         public RepositoryBase(AppDbContext dbContext)
         {
@@ -26,6 +29,16 @@ namespace B2DriverLicense.Service.Repositories
         public async Task AddAsync(T entity)
         {
             await _dbContext.Set<T>().AddAsync(entity);
+        }
+
+        public void AddRange(List<T> entities)
+        {
+            _dbContext.Set<T>().AddRange(entities);
+        }
+
+        public async Task AddRangeAsync(List<T> entities)
+        {
+            await _dbContext.Set<T>().AddRangeAsync(entities);
         }
     }
 }
