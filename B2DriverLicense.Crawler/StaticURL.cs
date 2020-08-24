@@ -2,11 +2,15 @@
 {
     public class StaticURL
     {
-        public string[] Url_1 { get; } = new string[]
+        public string[] Url_0 { get; } = new string[]
         {
             "http://daotaolaixehcm.vn/thi-bang-lai-xe/cac-khai-niem-p1/",
             "http://daotaolaixehcm.vn/thi-bang-lai-xe/cac-khai-niem-p2/",
-            "http://daotaolaixehcm.vn/thi-bang-lai-xe/cac-khai-niem-p3/",
+            "http://daotaolaixehcm.vn/thi-bang-lai-xe/cac-khai-niem-p3/"
+        };
+
+        public string[] Url_1 { get; } = new string[]
+        {
             "http://daotaolaixehcm.vn/thi-bang-lai-xe/quy-tac-giao-thong-duong-bo-p1/",
             "http://daotaolaixehcm.vn/thi-bang-lai-xe/quy-tac-giao-thong-duong-bo-p2/",
             "http://daotaolaixehcm.vn/thi-bang-lai-xe/quy-tac-giao-thong-duong-bo-p3/",

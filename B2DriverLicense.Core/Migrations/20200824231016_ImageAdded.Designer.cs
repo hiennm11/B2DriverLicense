@@ -4,14 +4,16 @@ using B2DriverLicense.Core.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace B2DriverLicense.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200824231016_ImageAdded")]
+    partial class ImageAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,7 +149,8 @@ namespace B2DriverLicense.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ChapterId");
+                    b.HasIndex("ChapterId")
+                        .IsUnique();
 
                     b.ToTable("Questions");
                 });
@@ -173,8 +176,8 @@ namespace B2DriverLicense.Core.Migrations
             modelBuilder.Entity("B2DriverLicense.Core.Entities.Question", b =>
                 {
                     b.HasOne("B2DriverLicense.Core.Entities.Chapter", "Chapter")
-                        .WithMany("Question")
-                        .HasForeignKey("ChapterId")
+                        .WithOne("Question")
+                        .HasForeignKey("B2DriverLicense.Core.Entities.Question", "ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

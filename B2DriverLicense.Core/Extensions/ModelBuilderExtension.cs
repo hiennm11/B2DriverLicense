@@ -18,7 +18,7 @@ namespace B2DriverLicense.Core.Extensions
 
             modelBuilder.Entity<Question>().HasKey(x => x.Id);
             modelBuilder.Entity<Question>().HasMany(x => x.Answers).WithOne(s => s.Question);
-            modelBuilder.Entity<Question>().HasOne(x => x.Chapter).WithOne(s => s.Question);
+            modelBuilder.Entity<Question>().HasOne(x => x.Chapter).WithMany(s => s.Question);
             modelBuilder.Entity<Question>().HasOne(x => x.Hint).WithOne(s => s.Question);
         }
 

@@ -10,6 +10,6 @@ namespace B2DriverLicense.Core.Entities
         public int Id { get; set; }
         public string Title { get; set; }
 
-        public Question Question { get; set; }
+        public ICollection<Question> Question { get; set; }
     }
 }

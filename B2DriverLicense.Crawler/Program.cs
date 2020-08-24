@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace B2DriverLicense.AppCrawler
 {
@@ -52,11 +53,11 @@ namespace B2DriverLicense.AppCrawler
             }
         }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             RegisterServices();
             IServiceScope scope = _serviceProvider.CreateScope();
-            scope.ServiceProvider.GetRequiredService<ConsoleApplication>().Run();
+            await scope.ServiceProvider.GetRequiredService<ConsoleApplication>().Run();
             DisposeServices();
         }
     }  
