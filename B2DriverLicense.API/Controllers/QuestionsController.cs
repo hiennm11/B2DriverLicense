@@ -25,25 +25,42 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(int page = 1, int pageSize = 10, bool include = false)
+        public IActionResult Get(int page = 1, int pageSize = 10, bool include = false, int chapterId = 0)
         {
-            var response = _questionRepository.GetQuestionsPaging(page, pageSize, include);
-            if(response != null)
+            var response = _questionRepository.GetQuestionsPaging(page, pageSize, include, chapterId);
+
+            if(response == null)
             {
-                return Ok(response);
+                return NotFound();
             }
-            return NotFound();
+
+            return Ok(response);
         }
 
-        [HttpGet("{number}", Name = "GetQuestionByNumber")]
+        [HttpGet("id/{questionId}", Name = "GetQuestionById")]
+        public IActionResult GetQuestionById(int questionId, bool include = false)
+        {
+            var response = _questionRepository.GetQuestionById(questionId, include);
+
+            if (response == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("number/{number}", Name = "GetQuestionByNumber")]
         public IActionResult GetQuestionByNumber(int number, bool include = false)
         {
             var response = _questionRepository.GetQuestionByNumber(number, include);
-            if (response != null)
+
+            if (response == null)
             {
-                return Ok(response);
+                return NotFound();
             }
-            return NotFound();
+
+            return Ok(response);
         }
 
         [HttpPost]
@@ -61,12 +78,21 @@ namespace B2DriverLicense.API.Controllers
 
                 _questionRepository.CreateQuestion(entity);
                 
-                if (_unitOfWork.SaveChange())
+                if (!_unitOfWork.SaveChange())
                 {
-                    return CreatedAtRoute(nameof(GetQuestionByNumber), new { number = question.Number }, question);
+                    return BadRequest();
                 }
-                
-                return BadRequest();
+
+                return CreatedAtRoute(nameof(GetQuestionByNumber),
+                                      new { number = question.Number },
+                                      new QuestionReadDto
+                                      {
+                                          Id = entity.Id,
+                                          ChapterId = entity.ChapterId,
+                                          Content = entity.Content,
+                                          CorrectAnswer = entity.CorrectAnswer,
+                                          Number = entity.Number
+                                      });
             }
             catch (Exception)
             {
@@ -75,8 +101,41 @@ namespace B2DriverLicense.API.Controllers
             }
         }
 
-        [HttpPut("{number}")]
-        public IActionResult UpdateQuestion(int number, QuestionUpdateDto question)
+        [HttpPut("id/{questionId}")]
+        public IActionResult UpdateQuestionById(int questionId, QuestionUpdateDto question)
+        {
+            var questionEntity = _questionRepository.GetQuestionEntityById(questionId);
+
+            if (questionEntity == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                var entity = questionEntity;
+                entity.Content = question.Content;
+                entity.CorrectAnswer = question.CorrectAnswer;
+                entity.ChapterId = question.ChapterId;
+
+                _questionRepository.UpdateQuestion(entity);
+
+                if (!_unitOfWork.SaveChange())
+                {
+                    return BadRequest();
+                }
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Server error!");
+            }
+        }
+
+
+        [HttpPut("number/{number}")]
+        public IActionResult UpdateQuestionByNumber(int number, QuestionUpdateDto question)
         {
             var questionEntity = _questionRepository.GetQuestionEntityByNumber(number);
 
@@ -94,12 +153,39 @@ namespace B2DriverLicense.API.Controllers
 
                 _questionRepository.UpdateQuestion(entity);
                 
-                if (_unitOfWork.SaveChange())
+                if (!_unitOfWork.SaveChange())
                 {
-                    return NoContent();
+                    return BadRequest();
                 }
                 
-                return BadRequest();
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Server error!");
+            }
+        }
+
+        [HttpDelete("id/{questionId}")]
+        public IActionResult DeleteQuestionById(int questionId)
+        {
+            var questionEntity = _questionRepository.GetQuestionById(questionId);
+
+            if (questionEntity == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                _questionRepository.DeleteQuestionById(questionId);
+
+                if (!_unitOfWork.SaveChange())
+                {
+                    return BadRequest();
+                }
+
+                return NoContent();
             }
             catch (Exception)
             {
@@ -108,8 +194,8 @@ namespace B2DriverLicense.API.Controllers
             }
         }
 
-        [HttpDelete("{number}")]
-        public IActionResult DeleteQuestion(int number)
+        [HttpDelete("number/{number}")]
+        public IActionResult DeleteQuestionByNumber(int number)
         {
             var questionEntity = _questionRepository.GetQuestionByNumber(number);
 
@@ -121,11 +207,13 @@ namespace B2DriverLicense.API.Controllers
             try
             {
                 _questionRepository.DeleteQuestionByNumber(number);
-                if (_unitOfWork.SaveChange())
+
+                if (!_unitOfWork.SaveChange())
                 {
-                    return NoContent();
+                    return BadRequest();
                 }
-                return BadRequest();
+
+                return NoContent();
             }
             catch (Exception)
             {

@@ -11,5 +11,7 @@ namespace B2DriverLicense.Core.Dtos
         public string Content { get; set; }
         public int CorrectAnswer { get; set; }
         public int ChapterId { get; set; }
+
+        public List<AnswerReadDto> Answers { get; set; }
     }
 }
