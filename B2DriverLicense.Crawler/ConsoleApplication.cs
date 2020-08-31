@@ -139,7 +139,7 @@ namespace B2DriverLicense.AppCrawler
 
                 try
                 {
-                    if (await _unitOfWork.SaveChangeAsync() > 0)
+                    if (await _unitOfWork.SaveChangeAsync())
                     {
                         Console.WriteLine("Saved data to DB !");
                         Console.WriteLine("Done !");

@@ -8,8 +8,8 @@ namespace B2DriverLicense.Service
 {
     public interface IUnitOfWork : IDisposable
     {
-        public int SaveChange();
-        public Task<int> SaveChangeAsync();
+        public bool SaveChange();
+        public Task<bool> SaveChangeAsync();
     }
 
     public class UnitOfWork : IUnitOfWork
@@ -40,14 +40,14 @@ namespace B2DriverLicense.Service
             GC.SuppressFinalize(this);
         }
 
-        public int SaveChange()
+        public bool SaveChange()
         {
-            return _dbContext.SaveChanges();
+            return _dbContext.SaveChanges() > 0;
         }
 
-        public async Task<int> SaveChangeAsync()
+        public async Task<bool> SaveChangeAsync()
         {
-            return await _dbContext.SaveChangesAsync();
+            return await _dbContext.SaveChangesAsync() > 0;
         }
     }
 }
