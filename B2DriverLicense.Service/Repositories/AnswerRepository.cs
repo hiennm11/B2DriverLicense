@@ -10,11 +10,12 @@ namespace B2DriverLicense.Service.Repositories
 {
     public interface IAnswerRepository : IRepositoryBase<Answer>
     {
-        IEnumerable<AnswerReadDto> GetAnswersPaging(int page, int pageSize);
-        IEnumerable<AnswerReadDto> GetAnswersByQuestionNumber(int number);
-        IEnumerable<AnswerReadDto> GetAnswersByQuestionId(int id);
-        AnswerReadDto GetAnswerByAnswerId(int id);
-        void CreateAnswerByQuestionId(int questionId, Answer answer);
+        IEnumerable<Answer> GetAnswersPaging(int page, int pageSize);
+        IEnumerable<Answer> GetAnswersByQuestionNumber(int number);
+        IEnumerable<Answer> GetAnswersByQuestionId(int id);
+        Answer GetAnswer(int number, int key);
+        Answer GetAnswerByAnswerId(int id);
+        void AddAnswerToQuestion(int number, Answer answer);
 
     }
 
@@ -24,9 +25,9 @@ namespace B2DriverLicense.Service.Repositories
         {
         }
 
-        public void CreateAnswerByQuestionId(int questionId, Answer answer)
+        public void AddAnswerToQuestion(int number, Answer answer)
         {
-            var question = _dbContext.Questions.FirstOrDefault(x => x.Id == questionId);
+            var question = _dbContext.Questions.FirstOrDefault(x => x.Number == number);
 
             if (question == null)
             {
@@ -43,62 +44,65 @@ namespace B2DriverLicense.Service.Repositories
                 question.Answers = new List<Answer>();
             }
 
+            var existing = _dbContext.Answers.FirstOrDefault(x => x.Key == answer.Key);
+
+            if(existing != null)
+            {
+
+            }
+
             question.Answers.Add(answer);
 
             _dbContext.Questions.Update(question);
             _dbContext.Entry(question).State = EntityState.Modified;
         }
 
-        public AnswerReadDto GetAnswerByAnswerId(int id)
+        public Answer GetAnswer(int number, int key)
+        {
+            var question = _dbContext.Questions.FirstOrDefault(x => x.Number == number);
+
+            if(question == null)
+            {
+                throw new ArgumentNullException(nameof(question));
+            }
+
+            var list = _dbContext.Answers.Where(x => x.QuestionId == question.Id);
+
+            if (list == null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            return list.FirstOrDefault(s => s.Key == key);
+
+        }
+
+        public Answer GetAnswerByAnswerId(int id)
         {
             var answer = _dbContext.Answers.FirstOrDefault(s => s.Id == id);
 
             if (answer == null) return null;
 
-            return new AnswerReadDto
-            {
-                Id = answer.Id,
-                Content = answer.Content,
-                Key = answer.Key,
-                QuestionId = answer.QuestionId
-            };
+            return answer;
         }
 
-        public IEnumerable<AnswerReadDto> GetAnswersByQuestionId(int id)
+        public IEnumerable<Answer> GetAnswersByQuestionId(int id)
         {
-            return _dbContext.Answers.Where(s=>s.QuestionId == id).Select(x => new AnswerReadDto
-            {
-                Id = x.Id,
-                Content = x.Content,
-                Key = x.Key,
-                QuestionId = x.QuestionId
-            });
+            return _dbContext.Answers.Where(s=>s.QuestionId == id);
         }
 
-        public IEnumerable<AnswerReadDto> GetAnswersByQuestionNumber(int number)
+        public IEnumerable<Answer> GetAnswersByQuestionNumber(int number)
         {
             var question = _dbContext.Questions.FirstOrDefault(x => x.Number == number);
 
             if (question == null) return null;
 
-            return _dbContext.Answers.Where(s => s.QuestionId == question.Id).Select(x => new AnswerReadDto
-            {
-                Id = x.Id,
-                Content = x.Content,
-                Key = x.Key,
-                QuestionId = x.QuestionId
-            });
+            return _dbContext.Answers.Where(s => s.QuestionId == question.Id);
         }
 
-        public IEnumerable<AnswerReadDto> GetAnswersPaging(int page, int pageSize)
+        public IEnumerable<Answer> GetAnswersPaging(int page, int pageSize)
         {
-            return _dbContext.Answers.Skip((page - 1) * pageSize).Take(pageSize).Select(x => new AnswerReadDto
-            {
-                Id = x.Id,
-                Content = x.Content,
-                Key = x.Key,
-                QuestionId = x.QuestionId
-            });
+            return _dbContext.Answers.Skip((page - 1) * pageSize).Take(pageSize);
         }
     }
 }

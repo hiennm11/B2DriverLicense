@@ -5,11 +5,10 @@ using System.Text;
 
 namespace B2DriverLicense.Core.Dtos
 {
-    public class AnswerCreateDto
+    public class AnswerCreateOrEditDto
     {
         [Required]
-        public int QuestionId { get; set; }
-        [Required]
+        [RegularExpression("([1-9][0-9]*)")]
         public int Key { get; set; }
         [Required]
         public string Content { get; set; }
