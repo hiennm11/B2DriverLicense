@@ -10,8 +10,10 @@ namespace B2DriverLicense.Core.Dtos
         [Required]
         public string Content { get; set; }
         [Required]
+        [RegularExpression("([1-9][0-9]*)")]
         public int CorrectAnswer { get; set; }
         [Required]
+        [RegularExpression("([1-9][0-9]*)")]
         public int ChapterId { get; set; }
     }
 }

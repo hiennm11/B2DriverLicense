@@ -44,21 +44,8 @@ namespace B2DriverLicense.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
             }
         }
-
-        [HttpGet("id/{questionId}", Name = "GetQuestionById")]
-        public IActionResult GetQuestionById(int questionId, bool include = false)
-        {
-            var response = _questionRepository.GetQuestionById(questionId, include);
-
-            if (response == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(response.MapToReadModel());
-        }
-
-        [HttpGet("number/{number}", Name = "GetQuestionByNumber")]
+        
+        [HttpGet("{number:int}", Name = "GetQuestionByNumber")]
         public IActionResult GetQuestionByNumber(int number, bool include = false)
         {
             var response = _questionRepository.GetQuestionByNumber(number, include);
@@ -98,42 +85,9 @@ namespace B2DriverLicense.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
                 
             }
-        }
+        }        
 
-        [HttpPut("id/{questionId}")]
-        public IActionResult UpdateQuestionById(int questionId, QuestionUpdateDto question)
-        {
-            var questionEntity = _questionRepository.GetQuestionById(questionId);
-
-            if (questionEntity == null)
-            {
-                return NotFound($"Could not find any question with id of {questionId}");
-            }
-
-            try
-            {
-                var entity = questionEntity;
-                entity.Content = question.Content;
-                entity.CorrectAnswer = question.CorrectAnswer;
-                entity.ChapterId = question.ChapterId;
-
-                _questionRepository.Update(entity);
-
-                if (!_unitOfWork.SaveChange())
-                {
-                    return BadRequest();
-                }
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
-            }
-        }
-
-
-        [HttpPut("number/{number}")]
+        [HttpPut("{number:int}")]
         public IActionResult UpdateQuestionByNumber(int number, QuestionUpdateDto question)
         {
             var questionEntity = _questionRepository.GetQuestionByNumber(number);
@@ -165,35 +119,7 @@ namespace B2DriverLicense.API.Controllers
             }
         }
 
-        [HttpDelete("id/{questionId}")]
-        public IActionResult DeleteQuestionById(int questionId)
-        {
-            var questionEntity = _questionRepository.GetQuestionById(questionId);
-
-            if (questionEntity == null)
-            {
-                return NotFound();
-            }
-
-            try
-            {
-                _questionRepository.Delete(questionEntity);
-
-                if (!_unitOfWork.SaveChange())
-                {
-                    return BadRequest();
-                }
-
-                return Ok();
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Database Failure");
-
-            }
-        }
-
-        [HttpDelete("number/{number}")]
+        [HttpDelete("{number:int}")]
         public IActionResult DeleteQuestionByNumber(int number)
         {
             var questionEntity = _questionRepository.GetQuestionByNumber(number);
