@@ -26,11 +26,11 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetByQuestionNumber(int number)
+        public async Task<IActionResult> GetByQuestionNumber(int number)
         {
             try
             {
-                var response = _questionRepository.GetAnswersByQuestionNumber(number);
+                var response = await _questionRepository.GetAnswersByQuestionNumberAsync(number);
 
                 if (response == null)
                 {
@@ -46,11 +46,11 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpGet("{key:int}", Name = "GetByAnswerKey")]
-        public IActionResult GetByAnswerKey(int number, int key)
+        public async Task<IActionResult> GetByAnswerKey(int number, int key)
         {
             try
             {
-                var response = _questionRepository.GetAnswer(number, key);
+                var response = await _questionRepository.GetAnswerAsync(number, key);
 
                 if (response == null)
                 {
@@ -66,13 +66,13 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateAnswer(int number, AnswerCreateOrEditDto answer)
+        public async Task<IActionResult> CreateAnswer(int number, AnswerCreateOrEditDto answer)
         {
             try
             {
                 var answerEntity = answer.CreateAnswerFromDto();
 
-                var question = _questionRepository.GetQuestionByNumber(number, true);
+                var question = await _questionRepository.GetQuestionByNumberAsync(number, true);
 
                 if (question == null)
                 {
@@ -89,7 +89,7 @@ namespace B2DriverLicense.API.Controllers
                     question.Answers = new List<Answer>();
                 }
 
-                var existing = _questionRepository.GetAnswer(number, answer.Key);
+                var existing = await _questionRepository.GetAnswerAsync(number, answer.Key);
 
                 if (existing != null)
                 {
@@ -100,7 +100,7 @@ namespace B2DriverLicense.API.Controllers
 
                 _questionRepository.Update(question);
 
-                if (!_unitOfWork.SaveChange())
+                if (!await _unitOfWork.SaveChangeAsync())
                 {
                     return BadRequest();
                 }
@@ -116,11 +116,11 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpPut("{key:int}")]
-        public IActionResult UpdateAnswer(int number, int key, AnswerCreateOrEditDto answer)
+        public async Task<IActionResult> UpdateAnswer(int number, int key, AnswerCreateOrEditDto answer)
         {
             try
             {
-                var question = _questionRepository.GetQuestionByNumber(number, true);
+                var question = await _questionRepository.GetQuestionByNumberAsync(number, true);
 
                 if (question == null)
                 {
@@ -132,7 +132,7 @@ namespace B2DriverLicense.API.Controllers
                     return BadRequest("Answer is required");
                 }
 
-                var answerToUpdate = _questionRepository.GetAnswer(number, key);
+                var answerToUpdate = await _questionRepository.GetAnswerAsync(number, key);
 
                 if (answerToUpdate == null)
                 {
@@ -142,7 +142,7 @@ namespace B2DriverLicense.API.Controllers
                 answerToUpdate.UpdateAnswerFromDto(answer);
                 _questionRepository.UpdateAnswer(answerToUpdate);
 
-                if (!_unitOfWork.SaveChange())
+                if (!await _unitOfWork.SaveChangeAsync())
                 {
                     return BadRequest();
                 }
@@ -157,18 +157,18 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpDelete("{key:int}")]
-        public IActionResult DeteleAnswer(int number, int key)
+        public async Task<IActionResult> DeteleAnswer(int number, int key)
         {
             try
             {
-                var question = _questionRepository.GetQuestionByNumber(number, true);
+                var question = _questionRepository.GetQuestionByNumberAsync(number, true);
 
                 if (question == null)
                 {
                     return NotFound($"Could not find any question number: {number}");
                 }
 
-                var answerToDelete = _questionRepository.GetAnswer(number, key);
+                var answerToDelete = await _questionRepository.GetAnswerAsync(number, key);
 
                 if (answerToDelete == null)
                 {
@@ -177,7 +177,7 @@ namespace B2DriverLicense.API.Controllers
 
                 _questionRepository.DeleteAnswer(answerToDelete);
 
-                if (!_unitOfWork.SaveChange())
+                if (!await _unitOfWork.SaveChangeAsync())
                 {
                     return BadRequest();
                 }
