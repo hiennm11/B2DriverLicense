@@ -16,13 +16,11 @@ namespace B2DriverLicense.API.Controllers
     [ApiController]
     public class AnswersController : ControllerBase
     {
-        private readonly IAnswerRepository _answerRepository;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AnswersController(IAnswerRepository answerRepository, IQuestionRepository questionRepository, IUnitOfWork unitOfWork)
+        public AnswersController(IQuestionRepository questionRepository, IUnitOfWork unitOfWork)
         {
-            this._answerRepository = answerRepository;
             this._questionRepository = questionRepository;
             this._unitOfWork = unitOfWork;
         }
@@ -32,7 +30,7 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var response = _answerRepository.GetAnswersByQuestionNumber(number);
+                var response = _questionRepository.GetAnswersByQuestionNumber(number);
 
                 if (response == null)
                 {
@@ -52,7 +50,7 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var response = _answerRepository.GetAnswer(number, key);
+                var response = _questionRepository.GetAnswer(number, key);
 
                 if (response == null)
                 {
@@ -91,7 +89,7 @@ namespace B2DriverLicense.API.Controllers
                     question.Answers = new List<Answer>();
                 }
 
-                var existing = _answerRepository.GetAnswer(number, answer.Key);
+                var existing = _questionRepository.GetAnswer(number, answer.Key);
 
                 if (existing != null)
                 {
@@ -134,7 +132,7 @@ namespace B2DriverLicense.API.Controllers
                     return BadRequest("Answer is required");
                 }
 
-                var answerToUpdate = _answerRepository.GetAnswer(number, key);
+                var answerToUpdate = _questionRepository.GetAnswer(number, key);
 
                 if (answerToUpdate == null)
                 {
@@ -142,7 +140,7 @@ namespace B2DriverLicense.API.Controllers
                 }
 
                 answerToUpdate.UpdateAnswerFromDto(answer);
-                _answerRepository.Update(answerToUpdate);
+                _questionRepository.UpdateAnswer(answerToUpdate);
 
                 if (!_unitOfWork.SaveChange())
                 {
@@ -170,14 +168,14 @@ namespace B2DriverLicense.API.Controllers
                     return NotFound($"Could not find any question number: {number}");
                 }
 
-                var answerToDelete = _answerRepository.GetAnswer(number, key);
+                var answerToDelete = _questionRepository.GetAnswer(number, key);
 
                 if (answerToDelete == null)
                 {
                     return BadRequest($"Could not find any answer with key of {key}");
                 }
 
-                _answerRepository.Delete(answerToDelete);
+                _questionRepository.DeleteAnswer(answerToDelete);
 
                 if (!_unitOfWork.SaveChange())
                 {

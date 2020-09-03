@@ -33,9 +33,7 @@ namespace B2DriverLicense.API
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<IQuestionRepository, QuestionRepository>();
-            services.AddTransient<IAnswerRepository, AnswerRepository>();
-            services.AddTransient<IHintRepository, HintRepository>();
-
+          
             services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
 

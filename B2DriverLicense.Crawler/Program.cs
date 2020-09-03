@@ -33,8 +33,6 @@ namespace B2DriverLicense.AppCrawler
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<IQuestionRepository, QuestionRepository>();
-            services.AddTransient<IAnswerRepository, AnswerRepository>();
-            services.AddTransient<IHintRepository, HintRepository>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ConsoleApplication>();

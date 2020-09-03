@@ -19,17 +19,13 @@ namespace B2DriverLicense.AppCrawler
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IQuestionRepository _question;
-        private readonly IHintRepository _hint;
-        private readonly IAnswerRepository _answer;
 
         private static StaticURL staticURL = new StaticURL();
 
-        public ConsoleApplication(IUnitOfWork unitOfWork, IQuestionRepository question, IHintRepository hint, IAnswerRepository answer)
+        public ConsoleApplication(IUnitOfWork unitOfWork, IQuestionRepository question)
         {
             this._unitOfWork = unitOfWork;
-            this._question = question;
-            this._hint = hint;
-            this._answer = answer;
+            this._question = question;            
         }
 
         public async Task Run()
