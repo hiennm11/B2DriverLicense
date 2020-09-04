@@ -16,12 +16,12 @@ namespace B2DriverLicense.API.Controllers
     [ApiController]
     public class AnswersController : ControllerBase
     {
-        private readonly IQuestionRepository _questionRepository;
+        private readonly IQuestionRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AnswersController(IQuestionRepository questionRepository, IUnitOfWork unitOfWork)
+        public AnswersController(IQuestionRepository repository, IUnitOfWork unitOfWork)
         {
-            this._questionRepository = questionRepository;
+            this._repository = repository;
             this._unitOfWork = unitOfWork;
         }
 
@@ -30,7 +30,7 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var response = await _questionRepository.GetAnswersByQuestionNumberAsync(number);
+                var response = await _repository.GetAnswersByQuestionNumberAsync(number);
 
                 if (response == null)
                 {
@@ -50,7 +50,7 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var response = await _questionRepository.GetAnswerAsync(number, key);
+                var response = await _repository.GetAnswerAsync(number, key);
 
                 if (response == null)
                 {
@@ -66,13 +66,13 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAnswer(int number, AnswerCreateOrEditDto answer)
+        public async Task<IActionResult> CreateAnswer(int number, AnswerCreateOrUpdateDto answer)
         {
             try
             {
                 var answerEntity = answer.CreateAnswerFromDto();
 
-                var question = await _questionRepository.GetQuestionByNumberAsync(number, true);
+                var question = await _repository.GetQuestionByNumberAsync(number, true);
 
                 if (question == null)
                 {
@@ -89,7 +89,7 @@ namespace B2DriverLicense.API.Controllers
                     question.Answers = new List<Answer>();
                 }
 
-                var existing = await _questionRepository.GetAnswerAsync(number, answer.Key);
+                var existing = await _repository.GetAnswerAsync(number, answer.Key);
 
                 if (existing != null)
                 {
@@ -98,7 +98,7 @@ namespace B2DriverLicense.API.Controllers
 
                 question.Answers.Add(answerEntity);
 
-                _questionRepository.Update(question);
+                _repository.Update(question);
 
                 if (!await _unitOfWork.SaveChangeAsync())
                 {
@@ -116,11 +116,11 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpPut("{key:int}")]
-        public async Task<IActionResult> UpdateAnswer(int number, int key, AnswerCreateOrEditDto answer)
+        public async Task<IActionResult> UpdateAnswer(int number, int key, AnswerCreateOrUpdateDto answer)
         {
             try
             {
-                var question = await _questionRepository.GetQuestionByNumberAsync(number, true);
+                var question = await _repository.GetQuestionByNumberAsync(number, true);
 
                 if (question == null)
                 {
@@ -132,7 +132,7 @@ namespace B2DriverLicense.API.Controllers
                     return BadRequest("Answer is required");
                 }
 
-                var answerToUpdate = await _questionRepository.GetAnswerAsync(number, key);
+                var answerToUpdate = await _repository.GetAnswerAsync(number, key);
 
                 if (answerToUpdate == null)
                 {
@@ -140,7 +140,7 @@ namespace B2DriverLicense.API.Controllers
                 }
 
                 answerToUpdate.UpdateAnswerFromDto(answer);
-                _questionRepository.UpdateAnswer(answerToUpdate);
+                _repository.UpdateAnswer(answerToUpdate);
 
                 if (!await _unitOfWork.SaveChangeAsync())
                 {
@@ -161,21 +161,21 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var question = _questionRepository.GetQuestionByNumberAsync(number, true);
+                var question = _repository.GetQuestionByNumberAsync(number, true);
 
                 if (question == null)
                 {
                     return NotFound($"Could not find any question number: {number}");
                 }
 
-                var answerToDelete = await _questionRepository.GetAnswerAsync(number, key);
+                var answerToDelete = await _repository.GetAnswerAsync(number, key);
 
                 if (answerToDelete == null)
                 {
                     return BadRequest($"Could not find any answer with key of {key}");
                 }
 
-                _questionRepository.DeleteAnswer(answerToDelete);
+                _repository.DeleteAnswer(answerToDelete);
 
                 if (!await _unitOfWork.SaveChangeAsync())
                 {

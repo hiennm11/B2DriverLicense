@@ -31,7 +31,7 @@ namespace B2DriverLicense.Core.Extensions
             }).ToList();
         }
 
-        public static Answer CreateAnswerFromDto(this AnswerCreateOrEditDto answer)
+        public static Answer CreateAnswerFromDto(this AnswerCreateOrUpdateDto answer)
         {
             return new Answer
             {
@@ -40,7 +40,7 @@ namespace B2DriverLicense.Core.Extensions
             };
         }
 
-        public static void UpdateAnswerFromDto(this Answer entity, AnswerCreateOrEditDto dto)
+        public static void UpdateAnswerFromDto(this Answer entity, AnswerCreateOrUpdateDto dto)
         {
             entity.Content = !string.IsNullOrWhiteSpace(dto.Content) ? dto.Content : entity.Content;
             entity.Key = dto.Key > 0 ? dto.Key : entity.Key;

@@ -16,12 +16,12 @@ namespace B2DriverLicense.API.Controllers
     [ApiController]
     public class QuestionsController : ControllerBase
     {
-        private readonly IQuestionRepository _questionRepository;
+        private readonly IQuestionRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public QuestionsController(IQuestionRepository questionRepository, IUnitOfWork unitOfWork)
+        public QuestionsController(IQuestionRepository repository, IUnitOfWork unitOfWork)
         {
-            this._questionRepository = questionRepository;
+            this._repository = repository;
             this._unitOfWork = unitOfWork;
         }
 
@@ -30,7 +30,7 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var response = await _questionRepository.GetQuestionsPagingAsync(page, pageSize, include, chapterId);
+                var response = await _repository.GetQuestionsPagingAsync(page, pageSize, include, chapterId);
 
                 if (response == null)
                 {
@@ -48,7 +48,7 @@ namespace B2DriverLicense.API.Controllers
         [HttpGet("{number:int}", Name = "GetQuestionByNumber")]
         public async Task<IActionResult> GetQuestionByNumber(int number, bool include = false)
         {
-            var response = await _questionRepository.GetQuestionByNumberAsync(number, include);
+            var response = await _repository.GetQuestionByNumberAsync(number, include);
 
             if (response == null)
             {
@@ -63,13 +63,13 @@ namespace B2DriverLicense.API.Controllers
         {
             try
             {
-                var existing = _questionRepository.GetQuestionByNumberAsync(question.Number);
+                var existing = _repository.GetQuestionByNumberAsync(question.Number);
 
                 if (existing != null) return BadRequest("Question is use");
 
                 var entity = question.MapCreateDtoToEntity();
 
-                await _questionRepository.AddAsync(entity);
+                await _repository.AddAsync(entity);
                 
                 if (!(await _unitOfWork.SaveChangeAsync()))
                 {
@@ -90,7 +90,7 @@ namespace B2DriverLicense.API.Controllers
         [HttpPut("{number:int}")]
         public async Task<IActionResult> UpdateQuestionByNumber(int number, QuestionUpdateDto question)
         {
-            var questionEntity = await _questionRepository.GetQuestionByNumberAsync(number);
+            var questionEntity = await _repository.GetQuestionByNumberAsync(number);
 
             if(questionEntity == null)
             {
@@ -104,7 +104,7 @@ namespace B2DriverLicense.API.Controllers
                 entity.CorrectAnswer = question.CorrectAnswer;
                 entity.ChapterId = question.ChapterId;
 
-                _questionRepository.Update(entity);
+                _repository.Update(entity);
                 
                 if (!await _unitOfWork.SaveChangeAsync())
                 {
@@ -122,7 +122,7 @@ namespace B2DriverLicense.API.Controllers
         [HttpDelete("{number:int}")]
         public async Task<IActionResult> DeleteQuestionByNumber(int number)
         {
-            var questionEntity = await _questionRepository.GetQuestionByNumberAsync(number);
+            var questionEntity = await _repository.GetQuestionByNumberAsync(number);
 
             if (questionEntity == null)
             {
@@ -131,7 +131,7 @@ namespace B2DriverLicense.API.Controllers
 
             try
             {
-                _questionRepository.Delete(questionEntity);
+                _repository.Delete(questionEntity);
 
                 if (!await _unitOfWork.SaveChangeAsync())
                 {
