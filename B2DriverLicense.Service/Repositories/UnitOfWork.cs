@@ -4,14 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace B2DriverLicense.Service
+namespace B2DriverLicense.Service.Repositories
 {
-    public interface IUnitOfWork : IDisposable
-    {
-        public bool SaveChange();
-        public Task<bool> SaveChangeAsync();
-    }
-
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _dbContext;

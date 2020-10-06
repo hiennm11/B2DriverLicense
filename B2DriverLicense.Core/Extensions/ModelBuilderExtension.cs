@@ -1,4 +1,5 @@
 ﻿using B2DriverLicense.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,38 @@ namespace B2DriverLicense.Core.Extensions
                new Chapter { Id = 7, Title = "Giải các thế sa hình và kỹ năng xử lý tình huống giao thông" },
                new Chapter { Id = 8, Title = "Câu hỏi điểm liệt" }
                );
+
+            Guid ADMIN_ID = Guid.NewGuid();
+            Guid ROLE_ID = ADMIN_ID;
+            modelBuilder.Entity<AppRole>().HasData(new AppRole
+            {
+                Id = ROLE_ID,
+                Name = "admin",
+                NormalizedName = "admin",
+                Description = "Admin role"
+            });
+
+            var hasher = new PasswordHasher<AppUser>();
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = ADMIN_ID,
+                UserName = "admin",
+                NormalizedUserName = "admin",
+                Email = "app-admin@abc.xyz",
+                NormalizedEmail = "app-admin@abc.xyz",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "Admin@123"),
+                SecurityStamp = string.Empty,
+                FirstName = "Admin",
+                LastName = "Admin",
+                PhoneNumber = "0985123745",
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = ROLE_ID,
+                UserId = ADMIN_ID
+            });
         }
     }
 }
