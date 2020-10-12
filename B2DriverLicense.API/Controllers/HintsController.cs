@@ -3,6 +3,7 @@ using B2DriverLicense.Core.Entities;
 using B2DriverLicense.Core.Extensions;
 using B2DriverLicense.Service;
 using B2DriverLicense.Service.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,6 +15,7 @@ namespace B2DriverLicense.API.Controllers
 {
     [Route("api/questions/{number:int}/hint")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
     public class HintsController : ControllerBase
     {
         private readonly IQuestionRepository _repository;
@@ -26,6 +28,7 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpGet(Name = "GetHint")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetHint(int number)
         {
             try

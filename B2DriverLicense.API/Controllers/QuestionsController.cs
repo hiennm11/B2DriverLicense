@@ -7,6 +7,7 @@ using B2DriverLicense.Core.Entities;
 using B2DriverLicense.Core.Extensions;
 using B2DriverLicense.Service;
 using B2DriverLicense.Service.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace B2DriverLicense.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Roles = "admin")]
     public class QuestionsController : ControllerBase
     {
         private readonly IQuestionRepository _repository;
@@ -26,6 +28,7 @@ namespace B2DriverLicense.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Get(int page = 1, int pageSize = 10, bool include = false, int chapterId = 0)
         {
             try
@@ -46,6 +49,7 @@ namespace B2DriverLicense.API.Controllers
         }
         
         [HttpGet("{number:int}", Name = "GetQuestionByNumber")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetQuestionByNumber(int number, bool include = false)
         {
             var response = await _repository.GetQuestionByNumberAsync(number, include);

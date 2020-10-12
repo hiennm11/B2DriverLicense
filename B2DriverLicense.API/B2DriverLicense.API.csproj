@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\B2DriverLicense.Core\B2DriverLicense.Core.csproj" />
     <ProjectReference Include="..\B2DriverLicense.Service\B2DriverLicense.Service.csproj" />
   </ItemGroup>

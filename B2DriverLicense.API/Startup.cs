@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using B2DriverLicense.Core.EF;
 using B2DriverLicense.Core.Entities;
 using B2DriverLicense.Service;
 using B2DriverLicense.Service.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -16,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace B2DriverLicense.API
 {
@@ -46,6 +49,20 @@ namespace B2DriverLicense.API
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
+            //Add authentication
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:SecretKey"]));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+                options => options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Tokens:Issuer"],
+                    ValidAudience = Configuration["Tokens:Audience"],
+                    IssuerSigningKey = securityKey
+                });
+            
             services.AddControllers();
 
         }
@@ -62,10 +79,10 @@ namespace B2DriverLicense.API
 
             app.UseRouting();
 
-            app.UseAuthentication();
-
             app.UseAuthorization();
 
+            app.UseAuthentication();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
